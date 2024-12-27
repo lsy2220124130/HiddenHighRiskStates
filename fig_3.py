@@ -316,13 +316,13 @@ if __name__=='__main__':
     aaa_all = [('01000010000101001100', 14), ('00000110000101011100', 13), ('11000010011101011110', 7), ('11000010011111001100', 6), ('00001110000101111100', 5), ('10000110001101011110', 4), ('11101100011101010111', 3)]
     local_minima_list = [x[0] for x in aaa_all]
 
-    # fig.3a
-    G_landscape(G, dict_p_result_big_p)
+    # # fig.3a
+    # G_landscape(G, dict_p_result_big_p)
 
-    # fig.3b
-    class_DG = function.DisconnectivityGraph(local_minima_list, dict_e_result,delta_E=0.1)
-    DG, dict_DG_node = class_DG.return_final_value()
-    class_DG.return_DG_plot(DG, dict_DG_node)
+    # # fig.3b
+    # class_DG = function.DisconnectivityGraph(local_minima_list, dict_e_result,delta_E=0.1)
+    # DG, dict_DG_node = class_DG.return_final_value()
+    # class_DG.return_DG_plot(DG, dict_DG_node)
 
     # fig3c
     # 画吸引子的basin大小等

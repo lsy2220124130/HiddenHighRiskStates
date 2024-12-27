@@ -8,7 +8,7 @@ input:
 
 output: 
     1. Fig.1d (interaction_network)
-    2. Fig.1e (macro_level_model_fitting_performance)
+    2. Fig.1e (micro and macro_level_model_fitting_performance)
 """
 
 import pandas as pd
@@ -18,7 +18,7 @@ import networkx as nx
 
 import json
 import os
-from function import draw_arrow_real2, return_ising_model_p, return_data_lcc_p, return_data_num1_p, return_model_lcc_p, return_model_num1_p, calculate_R_2, two_bar_plot
+from function import draw_arrow_real2, return_ising_model_p, return_data_lcc_p, return_model_lcc_p, calculate_R_2, return_ising_model_moment, return_data_two_moment,scatter_plot
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
@@ -66,11 +66,49 @@ def return_interaction_network(Jij, thre_j=0.5):
     plt.scatter([-4,-4, 4,4], [1,-5,1,-5])
     plt.show()
 
+# 验证模型  ①两个moment
+def draw_two_moments(dict_p_result, f_array_learn):
+    list_first, list_second = return_ising_model_moment(dict_p_result, n)
+    # 数据里的两个moment
+    mean_spins, mean_interactions = return_data_two_moment(f_array_learn)
 
-def G_distribution_verify(ax, f_str, dict_p_result, title='G_free'):
+    print(len(list_first))
+    print(len(mean_spins))
+    print(len(list_second))
+    print(len(mean_interactions))
+
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1, 2, 1)
+    scatter_plot(mean_spins, list_first, ax1, color='b', label='first_moment') 
+    ax2 = fig.add_subplot(1, 2, 2)
+    scatter_plot(mean_interactions, list_second, ax2, color='b', label='second_moment')
+
+    plt.rcParams['font.family'] = 'Times New Roman'
+    for ax in [ax1, ax2]:
+        # 设置刻度大小和粗细
+        ax.tick_params(axis='both', which='major', labelsize=12, width=1.5, direction='in')  # 主刻度朝内
+        # ax.tick_params(axis='both', which='minor', labelsize=10, width=1, direction='in')  # 次刻度朝内
+
+        # 减少刻度标签数量
+        ax.xaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # 横坐标减少到5个刻度
+        ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # 纵坐标减少到5个刻度
+
+        # 设置边框宽度
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)  # 设置边框宽度
+        
+        # 加粗刻度标签
+        for label in ax.get_xticklabels():
+            label.set_fontweight('bold')
+        for label in ax.get_yticklabels():
+            label.set_fontweight('bold')
+
+    plt.show()
+
+
+def G_distribution_verify_up_down(f_str, dict_p_result):
     with open("result_data/each_global_state_lcc_size.json", 'rb') as f_dict_lcc:
         dict_lcc = json.load(f_dict_lcc)
-
     dict_data_lcc_p = return_data_lcc_p(f_str, dict_lcc, n)
     dict_model_lcc_p = return_model_lcc_p(n, dict_p_result, dict_lcc)
 
@@ -80,44 +118,45 @@ def G_distribution_verify(ax, f_str, dict_p_result, title='G_free'):
     R_2 = calculate_R_2(list1, list2)
     print(R_2)
 
-    two_bar_plot(ax, [i/20 for i in list(dict_data_lcc_p.keys())], list(dict_data_lcc_p.values()), list(dict_model_lcc_p.values()), title, xmin=0, xmax=1)
+    fig = plt.figure()
+    # 设置字体为新罗马
+    plt.rcParams['font.family'] = 'Times New Roman'
+    ax1 = fig.add_subplot(211)
+    ax2 = fig.add_subplot(212)
 
-    df_result = pd.DataFrame({'x': [i/20 for i in list(dict_data_lcc_p.keys())], 'y_data': list(dict_data_lcc_p.values()), 'y_model': list(dict_model_lcc_p.values())})
-    return df_result, R_2
+    ax1.bar([i/20 for i in list(dict_data_lcc_p.keys())], list(dict_data_lcc_p.values()), color='green', width=0.04)
+    ax2.bar([i/20 for i in list(dict_model_lcc_p.keys())], list(dict_model_lcc_p.values()), color='orange', width=0.04)
 
-def G_jam_distribution_verify(ax, f_str, dict_p_result, title='G_jam'):
-    with open("result_data/each_global_state_jam_lcc_size.json", 'rb') as f_dict_lcc:
-        dict_lcc = json.load(f_dict_lcc)
+
+    ax1.set_xlim(0, 1)
+    ax2.set_xlim(0, 1)
+
+    # 设置字体为新罗马
+    plt.rcParams['font.family'] = 'Times New Roman'
+
+
+    for ax in [ax1, ax2]:
     
-    dict_data_lcc_p = return_data_lcc_p(f_str, dict_lcc, n)
-    dict_model_lcc_p = return_model_lcc_p(n, dict_p_result, dict_lcc)
+        # 设置刻度大小和粗细
+        ax.tick_params(axis='both', which='major', labelsize=12, width=1.5, direction='in')  # 主刻度朝内
+        # ax.tick_params(axis='both', which='minor', labelsize=10, width=1, direction='in')  # 次刻度朝内
 
-    list1 = list(dict_data_lcc_p.values())
-    list2 = list(dict_model_lcc_p.values())
+        # 减少刻度标签数量
+        ax.xaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # 横坐标减少到5个刻度
+        ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # 纵坐标减少到5个刻度
 
-    R_2 = calculate_R_2(list1, list2)
-    print(R_2)
+        # 设置边框宽度
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)  # 设置边框宽度
+        
+        # 加粗刻度标签
+        for label in ax.get_xticklabels():
+            label.set_fontweight('bold')
+        for label in ax.get_yticklabels():
+            label.set_fontweight('bold')
 
-    two_bar_plot(ax, [i/20 for i in list(dict_data_lcc_p.keys())], list(dict_data_lcc_p.values()), list(dict_model_lcc_p.values()), title, xmin=0, xmax=1)
-    df_result = pd.DataFrame({'x': list(dict_data_lcc_p.keys()), 'y_data': list(dict_data_lcc_p.values()), 'y_model': list(dict_model_lcc_p.values())})
-    return df_result, R_2
+    plt.show()
 
-def num_distribution_verify(ax, f_str, dict_p_result, title='num'):
-    # 统计数据中不同1的个数的占比
-
-    dict_data_num1_p = return_data_num1_p(f_str, n)
-
-    # 统计模型中不同1的个数占比
-    dict_model_num1_p = return_model_num1_p(n, dict_p_result)
-    # print(dict_data_num1_p.values())
-    # print(dict_model_num1_p.values())
-
-    R_2 = calculate_R_2(list(dict_data_num1_p.values()), list(dict_model_num1_p.values()))
-    print(R_2)
-
-    two_bar_plot(ax, [i/20 for i in list(dict_data_num1_p.keys())], list(dict_data_num1_p.values()), list(dict_model_num1_p.values()), title, xmin=0, xmax=1)
-    df_result = pd.DataFrame({'x': list(dict_data_num1_p.keys()), 'y_data': list(dict_data_num1_p.values()), 'y_model': list(dict_model_num1_p.values())})
-    return df_result, R_2
 
 
 q_01 = 0.09
@@ -157,21 +196,16 @@ if __name__=='__main__':
     df['str'] = df['str'].apply(lambda x: str(x).zfill(n))
     f_str = list(df['str'])
 
-    # Fig. 1e: G_free
-    fig = plt.figure(figsize=(5,4))
-    ax = fig.add_subplot(111)
-    df_G_free, R_2 = G_distribution_verify(ax, f_str, dict_p_result)
-    plt.show()
+    # generate data for learn
+    f_array = np.array([list(s) for s in f_str], dtype=int)
+    
+    # change 0 to -1
+    f_array[f_array==0] = -1
+    f_array_learn = f_array.astype(np.float64)
 
-    # Fig. 1e: G_jam
-    fig = plt.figure(figsize=(5,4))
-    ax = fig.add_subplot(111)
-    df_G_jam, R_2 = G_jam_distribution_verify(ax, f_str, dict_p_result)
-    plt.show()
+    # Fig. 1e: 2moments
+    draw_two_moments(dict_p_result, f_array_learn)
 
-    # Fig. 1e: num
-    fig = plt.figure(figsize=(5,4))
-    ax = fig.add_subplot(111)
-    df_num, R_2 = num_distribution_verify(ax, f_str, dict_p_result)
-    plt.show()
+    G_distribution_verify_up_down(f_str, dict_p_result)
+
 

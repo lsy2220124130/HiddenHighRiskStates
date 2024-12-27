@@ -465,3 +465,21 @@ def double_bar(x, y1, y2, color1='red', color2='green'):
 
     # 显示图形
     plt.show()
+
+# 拟合
+def return_Line_fit_list(x, y):
+    from scipy.optimize import curve_fit
+
+    def Line(x, a, b):
+        return a*x + b
+
+    param_l, param_cov_l = curve_fit(Line, np.array(x), np.array(y))
+    ans_y = Line(np.array(x), *param_l)
+
+    return ans_y
+
+def scatter_plot(list_x, list_y, ax, color, label, fit=True):
+    ax.scatter(list_x, list_y,label=label, color=color)
+    if fit:
+        list_y_ans = return_Line_fit_list(list_x, list_y)
+        ax.plot(list_x, list_y_ans, color)
