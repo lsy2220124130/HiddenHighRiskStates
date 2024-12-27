@@ -507,6 +507,21 @@ def double_bar(x, y1, y2, color1='red', color2='green'):
     ax1.bar(x - 0.2, y1, width=0.4, color=color1, align='center', label='Y1', edgecolor='black')
     ax1.bar(x + 0.2, y2, width=0.4, color=color2, align='center', label='Y2', edgecolor='black')
 
+    # 设置字体为新罗马
+    plt.rcParams['font.family'] = 'Times New Roman'
+    # 设置刻度大小和粗细
+    ax1.tick_params(axis='both', which='major', labelsize=12, width=1.5, direction='in')  # 主刻度朝内
+    # 减少刻度标签数量
+    ax1.yaxis.set_major_locator(plt.MaxNLocator(nbins=5))  # 横坐标减少到5个刻度
+    # 设置边框宽度
+    for spine in ax1.spines.values():
+        spine.set_linewidth(1.5)  # 设置边框宽度
+    # 加粗刻度标签
+    for label in ax1.get_xticklabels():
+        label.set_fontweight('bold')
+    for label in ax1.get_yticklabels():
+        label.set_fontweight('bold')
+
     # 添加标题和标签
     plt.title('Double Bar Chart with Different Y Axes')
     plt.xlabel('X')

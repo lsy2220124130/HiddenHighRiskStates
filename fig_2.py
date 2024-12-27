@@ -45,6 +45,24 @@ def e_distribution_two_2(dict_e_result, f_str):
     draw_pdf_n(list_data_e, ax, bin_num, bar_color, title, range_aaa, alpha=1, edgecolor='black',y_log=True)
 
     ax.set_ylim(0.1, 200000)
+
+    # 设置字体为新罗马
+    plt.rcParams['font.family'] = 'Times New Roman'
+    for ax in [ax]:
+        # 设置刻度大小和粗细
+        ax.tick_params(axis='both', which='major', labelsize=12, width=1.5, direction='in')  # 主刻度朝内
+        ax.tick_params(axis='both', which='minor', labelsize=10, width=1, direction='in')  # 次刻度朝内
+
+        # 设置边框宽度
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)  # 设置边框宽度
+        
+        # 加粗刻度标签
+        for label in ax.get_xticklabels():
+            label.set_fontweight('bold')
+        for label in ax.get_yticklabels():
+            label.set_fontweight('bold')
+
     plt.show()
 
 def heatmap_plot_G_p(dict_p_result, dict_lcc, f_str=[]):
@@ -81,8 +99,27 @@ def heatmap_plot_G_p(dict_p_result, dict_lcc, f_str=[]):
     for p_aaa_i in range(1, 12):
         y_list.append('10e-%s~10e-%s' % (p_aaa_i*2+1, p_aaa_i*2 + 3))
 
-    plt.figure()
-    sns.heatmap(array_p_G_log_10, xticklabels=x_list, yticklabels=y_list, square=False)
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    sns.heatmap(array_p_G_log_10, xticklabels=x_list, yticklabels=y_list, square=False, ax=ax)
+    # 设置字体为新罗马
+    plt.rcParams['font.family'] = 'Times New Roman'
+    for ax in [ax]:
+        # 设置刻度大小和粗细
+        ax.tick_params(axis='both', which='major', labelsize=12, width=1.5, direction='in')  # 主刻度朝内
+        ax.tick_params(axis='both', which='minor', labelsize=10, width=1, direction='in')  # 次刻度朝内
+
+        # 设置边框宽度
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)  # 设置边框宽度
+        
+        # 加粗刻度标签
+        for label in ax.get_xticklabels():
+            label.set_fontweight('bold')
+        for label in ax.get_yticklabels():
+            label.set_fontweight('bold')
+
+
     plt.show()
 
 

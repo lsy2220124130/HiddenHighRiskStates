@@ -313,7 +313,7 @@ if __name__=='__main__':
     由上面的代码可以得到7个local minima 及其对应lcc:
     [('01000010000101001100', 14), ('00000110000101011100', 13), ('11000010011101011110', 7), ('11000010011111001100', 6), ('00001110000101111100', 5), ('10000110001101011110', 4), ('11101100011101010111', 3)]
     """
-    aaa_all = [('01000010000101001100', 14), ('00000110000101011100', 13), ('11000010011101011110', 7), ('11000010011111001100', 6), ('00001110000101111100', 5), ('10000110001101011110', 4), ('11101100011101010111', 3)]
+    aaa_all = [('11000010011111001100', 6), ('11000010011101011110', 7), ('10000110001101011110', 4), ('00001110000101111100', 5), ('11101100011101010111', 3), ('01000010000101001100', 14), ('00000110000101011100', 13)]
     local_minima_list = [x[0] for x in aaa_all]
 
     # # fig.3a
@@ -331,9 +331,25 @@ if __name__=='__main__':
     y_model_list = np.array([len(dict_ancestors_model[x]) for x in local_minima_list])
     print(x_list)
     print(y_model_list)
-    plt.figure()
-    plt.bar(x_list, y_model_list, color='blue')
-    plt.yscale('log')
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.bar(x_list, y_model_list, color=['r','r','r','r','r','green','green'])
+    # 设置字体为新罗马
+    plt.rcParams['font.family'] = 'Times New Roman'
+    # 设置刻度大小和粗细
+    ax.tick_params(axis='both', which='major', labelsize=12, width=1.5, direction='in')  # 主刻度朝内
+    # 减少刻度标签数量
+    ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=4))  # 横坐标减少到5个刻度
+    # 设置边框宽度
+    for spine in ax.spines.values():
+        spine.set_linewidth(1.5)  # 设置边框宽度
+    # 加粗刻度标签
+    for label in ax.get_xticklabels():
+        label.set_fontweight('bold')
+    for label in ax.get_yticklabels():
+        label.set_fontweight('bold')
+
+    # plt.yscale('log')
     plt.show()
 
     # fig3d
@@ -341,6 +357,7 @@ if __name__=='__main__':
     leap_node_list_red = [x[0] for x in aaa_all if x[1]<10]
     # # # 补充类型内距离和类型间距离
     x_list, y_inner, y_inter = distance_distribution_type(leap_node_list_green, leap_node_list_red)
+
     double_bar(x_list, y_inner, y_inter)
 
 

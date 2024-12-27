@@ -178,6 +178,24 @@ def Risk_distribution(list_final_pre):
     ax2 = plt.subplot(212)
     draw_pdf(y_list=list_final_big_G_F,ax=ax1, bin_num=20, bar_color='green', title='F distribution for states with G≥0.5', range=(np.log10(0.009), np.log10(201)), alpha=1, edgecolor=None, y_log=True)
     draw_pdf(y_list=list_final_small_G_F,ax=ax2, bin_num=20, bar_color='red', title='F distribution for states with G<0.3', range=(np.log10(0.009), np.log10(201)), alpha=1, edgecolor=None, y_log=True)
+    
+    # 设置字体为新罗马
+    plt.rcParams['font.family'] = 'Times New Roman'
+    for ax in [ax1, ax2]:
+        # 设置刻度大小和粗细
+        ax.tick_params(axis='both', which='major', labelsize=12, width=1.5, direction='in')  # 主刻度朝内
+        ax.tick_params(axis='both', which='minor', labelsize=10, width=1, direction='in')  # 次刻度朝内
+
+        # 设置边框宽度
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)  # 设置边框宽度
+        
+        # 加粗刻度标签
+        for label in ax.get_xticklabels():
+            label.set_fontweight('bold')
+        for label in ax.get_yticklabels():
+            label.set_fontweight('bold')
+    
     plt.show()
 
 def verify_risk_indicator(list_final_pre):
@@ -258,7 +276,23 @@ def verify_risk_indicator(list_final_pre):
     ax2.errorbar(time_list, y_big_F_resilience, yerr=y_std_big_F_resilience, fmt='-o', label='big_F', color='b')   
     ax2.errorbar(time_list, y_small_F_resilience, yerr=y_std_small_F_resilience, fmt='-o', label='small_F', color='orange') 
 
-    plt.legend()
+    # 设置字体为新罗马
+    plt.rcParams['font.family'] = 'Times New Roman'
+    for ax in [ax1, ax2]:
+        # 设置刻度大小和粗细
+        ax.tick_params(axis='both', which='major', labelsize=12, width=1.5, direction='in')  # 主刻度朝内
+        # 减少刻度标签数量
+        ax.yaxis.set_major_locator(plt.MaxNLocator(nbins=3))  # 横坐标减少到5个刻度
+        # 设置边框宽度
+        for spine in ax.spines.values():
+            spine.set_linewidth(1.5)  # 设置边框宽度
+        # 加粗刻度标签
+        for label in ax.get_xticklabels():
+            label.set_fontweight('bold')
+        for label in ax.get_yticklabels():
+            label.set_fontweight('bold')
+
+    # plt.legend()
     plt.show()
 
 
