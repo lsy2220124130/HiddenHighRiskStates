@@ -39,6 +39,30 @@ def return_distance(str1, str2):
     return distance
 
 # data_analysis
+def return_data_two_moment(f_array):
+    #print(f_array[0])
+    # 获取行数
+    num_rows = len(f_array)
+    # 获取列数
+    num_cols = len(f_array[0]) 
+    n = num_cols
+    # 计算每个自旋的均值
+    mean_spins = np.mean(f_array, axis=0).reshape(1, -1)
+    # 计算每对自旋之间相互作用的均值
+    mean_interactions = np.zeros((1, int(n*(n-1)/2)))
+    k = 0
+    for i in range(n-1):
+        for j in range(i+1, n):
+            aaaaaaa = []
+            for mmm in range(num_rows):
+                #print(mmm)
+                #print(f_array[mmm])
+                aaaaaaa.append(f_array[mmm][i]*f_array[mmm][j])
+
+            mean_interactions[0, k] = np.mean(aaaaaaa)
+            k += 1
+    return mean_spins[0].tolist(), mean_interactions[0].tolist()
+
 def return_data_num1_p(f_str, n):
     dict_result = {}
     for n in range(n+1):
@@ -59,7 +83,31 @@ def return_data_lcc_p(f_str, dict_lcc, n):
         dict_result[lcc] += p
     return dict_result
 
+
+
 # model_analysis
+def return_ising_model_moment(dict_p_result, n):
+    list_first = np.array([0 for i in range(n)]).tolist()
+    list_second = np.array([0 for i in range(int(n*(n-1)/2))]).tolist()
+
+    for key in dict_p_result.keys():
+        state_i = key
+        state_i_tuple = [1 if j=='1' else -1 for j in state_i]
+
+        ising_p_i = dict_p_result[key]
+
+        for j_index in range(len(state_i_tuple)):
+            list_first[j_index] += state_i_tuple[j_index] * ising_p_i
+        
+        aaa = 0
+        for j_index in range(len(state_i_tuple)-1):
+            for k_index in range(j_index+1, len(state_i_tuple)):
+                list_second[aaa] += state_i_tuple[j_index] * state_i_tuple[k_index] * ising_p_i
+
+                aaa += 1
+
+    return list_first, list_second
+
 def return_model_lcc_p(n, dict_p_result, dict_lcc_result):
     dict_lcc_p_result = {}
     for i in range(n+1):
